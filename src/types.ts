@@ -13,3 +13,12 @@ export interface StudentInfo {
   className: string;
   schoolYear: string;
 }
+
+export interface HistoryRecord {
+  id: string;
+  date: string;
+  studentInfo: StudentInfo;
+  semester1: Subject[];
+  semester2: Subject[];
+  annualAvg: number;
+}

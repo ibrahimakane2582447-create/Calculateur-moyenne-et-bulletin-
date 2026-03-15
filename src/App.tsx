@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { StudentInfo, Subject } from './types';
+import React, { useState, useEffect } from 'react';
+import { StudentInfo, Subject, HistoryRecord } from './types';
 import { calculateSemesterAverage, formatNumber } from './utils';
 import BulletinModal from './components/BulletinModal';
-import { BookOpen, User, Calculator, FileText, GraduationCap, Plus, Trash2 } from 'lucide-react';
+import { BookOpen, User, Calculator, FileText, GraduationCap, Plus, Trash2, Clock, Save } from 'lucide-react';
 
 const DEFAULT_SUBJECTS: Subject[] = [
   { id: '1', name: 'Mathématiques', devoir1: '', devoir2: '', composition: '', coef: 4 },
@@ -15,7 +15,7 @@ const DEFAULT_SUBJECTS: Subject[] = [
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'S1' | 'S2' | 'ANNUAL'>('S1');
+  const [activeTab, setActiveTab] = useState<'S1' | 'S2' | 'ANNUAL' | 'HISTORY'>('S1');
   const [studentInfo, setStudentInfo] = useState<StudentInfo>({
     firstName: '',
     lastName: '',
@@ -28,6 +28,43 @@ export default function App() {
   
   const [isBulletinOpen, setIsBulletinOpen] = useState(false);
   const [bulletinType, setBulletinType] = useState<'S1' | 'S2'>('S1');
+
+  const [history, setHistory] = useState<HistoryRecord[]>(() => {
+    const saved = localStorage.getItem('educalc_history');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('educalc_history', JSON.stringify(history));
+  }, [history]);
+
+  const handleSaveToHistory = () => {
+    const avgS1 = calculateSemesterAverage(semester1);
+    const avgS2 = calculateSemesterAverage(semester2);
+    const annualAvg = (avgS1 + avgS2) / 2;
+    
+    const newRecord: HistoryRecord = {
+      id: Date.now().toString(),
+      date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      studentInfo,
+      semester1,
+      semester2,
+      annualAvg
+    };
+    setHistory([newRecord, ...history]);
+    setActiveTab('HISTORY');
+  };
+
+  const handleLoadHistory = (record: HistoryRecord) => {
+    setStudentInfo(record.studentInfo);
+    setSemester1(record.semester1);
+    setSemester2(record.semester2);
+    setActiveTab('S1');
+  };
+
+  const handleDeleteHistory = (id: string) => {
+    setHistory(history.filter(r => r.id !== id));
+  };
 
   const handleSubjectChange = (semester: 'S1' | 'S2', id: string, field: keyof Subject, value: string) => {
     if (field === 'name') {
@@ -294,42 +331,111 @@ export default function App() {
                   </div>
                 </div>
               </div>
+
+              <button
+                onClick={handleSaveToHistory}
+                className="w-full mt-4 py-3 bg-white border-2 border-indigo-600 text-indigo-600 rounded-xl font-bold hover:bg-indigo-50 transition-all flex items-center justify-center gap-2 shadow-sm"
+              >
+                <Save className="w-5 h-5" />
+                Sauvegarder dans l'historique
+              </button>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'HISTORY' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
+            <div className="flex items-center gap-2 mb-6">
+              <Clock className="w-5 h-5 text-indigo-600" />
+              <h2 className="text-xl font-bold text-gray-800">Historique</h2>
+            </div>
+
+            <div className="space-y-4">
+              {history.length === 0 ? (
+                <div className="text-center py-10 text-gray-500 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                  <Clock className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                  <p>Aucun historique sauvegardé.</p>
+                  <p className="text-sm mt-1 opacity-70">Allez dans "Annuel" pour sauvegarder.</p>
+                </div>
+              ) : (
+                history.map(record => (
+                  <div key={record.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h3 className="font-bold text-gray-800">{record.studentInfo.firstName} {record.studentInfo.lastName}</h3>
+                        <p className="text-sm text-gray-500">
+                          {record.studentInfo.className || 'Classe non précisée'} • {record.date}
+                        </p>
+                      </div>
+                      <div className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg font-bold text-sm">
+                        {formatNumber(record.annualAvg)}/20
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-4">
+                      <button 
+                        onClick={() => handleLoadHistory(record)}
+                        className="flex-1 bg-indigo-50 text-indigo-600 py-2 rounded-lg font-medium text-sm hover:bg-indigo-100 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <BookOpen className="w-4 h-4" />
+                        Ouvrir
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteHistory(record.id)}
+                        className="p-2 text-red-500 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                        title="Supprimer"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         )}
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-3 pb-safe">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-3 pb-safe z-50">
         <div className="max-w-md mx-auto flex justify-between items-center">
           <button
             onClick={() => setActiveTab('S1')}
-            className={`flex flex-col items-center gap-1 p-2 ${activeTab === 'S1' ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}
+            className={`flex flex-col items-center gap-1 p-2 flex-1 ${activeTab === 'S1' ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}
           >
             <div className={`p-1.5 rounded-xl ${activeTab === 'S1' ? 'bg-indigo-50' : ''}`}>
               <span className="font-bold text-lg leading-none">S1</span>
             </div>
-            <span className="text-xs font-medium">Semestre 1</span>
+            <span className="text-[10px] font-medium uppercase tracking-wider">Semestre 1</span>
           </button>
           
           <button
             onClick={() => setActiveTab('S2')}
-            className={`flex flex-col items-center gap-1 p-2 ${activeTab === 'S2' ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}
+            className={`flex flex-col items-center gap-1 p-2 flex-1 ${activeTab === 'S2' ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}
           >
             <div className={`p-1.5 rounded-xl ${activeTab === 'S2' ? 'bg-indigo-50' : ''}`}>
               <span className="font-bold text-lg leading-none">S2</span>
             </div>
-            <span className="text-xs font-medium">Semestre 2</span>
+            <span className="text-[10px] font-medium uppercase tracking-wider">Semestre 2</span>
           </button>
           
           <button
             onClick={() => setActiveTab('ANNUAL')}
-            className={`flex flex-col items-center gap-1 p-2 ${activeTab === 'ANNUAL' ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}
+            className={`flex flex-col items-center gap-1 p-2 flex-1 ${activeTab === 'ANNUAL' ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}
           >
             <div className={`p-1.5 rounded-xl ${activeTab === 'ANNUAL' ? 'bg-indigo-50' : ''}`}>
               <Calculator className="w-5 h-5" />
             </div>
-            <span className="text-xs font-medium">Annuel</span>
+            <span className="text-[10px] font-medium uppercase tracking-wider">Annuel</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('HISTORY')}
+            className={`flex flex-col items-center gap-1 p-2 flex-1 ${activeTab === 'HISTORY' ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}
+          >
+            <div className={`p-1.5 rounded-xl ${activeTab === 'HISTORY' ? 'bg-indigo-50' : ''}`}>
+              <Clock className="w-5 h-5" />
+            </div>
+            <span className="text-[10px] font-medium uppercase tracking-wider">Historique</span>
           </button>
         </div>
       </nav>
