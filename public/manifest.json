@@ -1,0 +1,17 @@
+{
+  "short_name": "Mes Notes",
+  "name": "Calcule mes notes",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/graduation-cap.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4f46e5",
+  "background_color": "#f9fafb",
+  "orientation": "portrait"
+}
