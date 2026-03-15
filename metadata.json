@@ -1,5 +1,5 @@
 {
-  "name": "EduCalc",
+  "name": "Calcule mes notes",
   "description": "Application de calcul de moyennes semestrielles et annuelles avec génération de bulletin PDF.",
   "requestFramePermissions": []
 }

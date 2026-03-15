@@ -173,7 +173,17 @@ export default function App() {
   const annualAvg = (avgS1 + avgS2) / 2;
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans pb-20">
+    <div 
+      className="min-h-screen bg-gray-50 text-gray-900 font-sans pb-20"
+      onCopy={(e) => e.preventDefault()}
+      onCut={(e) => e.preventDefault()}
+      onPaste={(e) => e.preventDefault()}
+      onContextMenu={(e) => {
+        if ((e.target as HTMLElement).tagName !== 'INPUT') {
+          e.preventDefault();
+        }
+      }}
+    >
       {/* Header */}
       <header className="bg-indigo-600 text-white pt-12 pb-6 px-4 shadow-md rounded-b-3xl">
         <div className="max-w-md mx-auto">
@@ -182,7 +192,7 @@ export default function App() {
               <GraduationCap className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold">EduCalc</h1>
+              <h1 className="text-2xl font-bold">Calcule mes notes</h1>
               <p className="text-indigo-200 text-sm">Moyennes & Bulletins</p>
             </div>
           </div>
