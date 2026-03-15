@@ -3,7 +3,7 @@ import { Download, X } from 'lucide-react';
 import { StudentInfo, Subject } from '../types';
 import { calculateSubjectAverage, calculateSemesterAverage, formatNumber } from '../utils';
 import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { jsPDF } from 'jspdf';
 
 interface Props {
   isOpen: boolean;

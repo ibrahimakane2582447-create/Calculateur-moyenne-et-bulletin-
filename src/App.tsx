@@ -179,7 +179,7 @@ export default function App() {
       onCut={(e) => e.preventDefault()}
       onPaste={(e) => e.preventDefault()}
       onContextMenu={(e) => {
-        if ((e.target as HTMLElement).tagName !== 'INPUT') {
+        if (e.target instanceof Element && e.target.tagName !== 'INPUT') {
           e.preventDefault();
         }
       }}
