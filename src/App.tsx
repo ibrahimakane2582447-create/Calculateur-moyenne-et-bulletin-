@@ -80,12 +80,21 @@ export default function App() {
       return;
     }
 
-    const numValue = value === '' ? '' : Math.max(0, Math.min(20, Number(value)));
-    
-    if (semester === 'S1') {
-      setSemester1(semester1.map(sub => sub.id === id ? { ...sub, [field]: numValue } : sub));
-    } else {
-      setSemester2(semester2.map(sub => sub.id === id ? { ...sub, [field]: numValue } : sub));
+    if (field === 'devoir1' || field === 'devoir2' || field === 'composition') {
+      let finalValue: string | number = value;
+      const parsed = parseFloat(value.replace(',', '.'));
+      if (!isNaN(parsed) && value.trim() !== '') {
+         if (parsed > 20) finalValue = '20';
+         else if (parsed < 0) finalValue = '0';
+         else finalValue = value;
+      }
+      
+      if (semester === 'S1') {
+        setSemester1(semester1.map(sub => sub.id === id ? { ...sub, [field]: finalValue } : sub));
+      } else {
+        setSemester2(semester2.map(sub => sub.id === id ? { ...sub, [field]: finalValue } : sub));
+      }
+      return;
     }
   };
 
@@ -149,34 +158,34 @@ export default function App() {
               <div>
                 <label className="block text-xs text-gray-500 mb-1">Devoir 1</label>
                 <input
-                  type="number"
-                  min="0" max="20" step="0.25"
+                  type="text"
+                  inputMode="decimal"
                   value={sub.devoir1}
                   onChange={(e) => handleSubjectChange(semester, sub.id, 'devoir1', e.target.value)}
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                  placeholder="/20"
+                  placeholder="/20 ou non"
                 />
               </div>
               <div>
                 <label className="block text-xs text-gray-500 mb-1">Devoir 2</label>
                 <input
-                  type="number"
-                  min="0" max="20" step="0.25"
+                  type="text"
+                  inputMode="decimal"
                   value={sub.devoir2}
                   onChange={(e) => handleSubjectChange(semester, sub.id, 'devoir2', e.target.value)}
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                  placeholder="/20"
+                  placeholder="/20 ou non"
                 />
               </div>
               <div>
                 <label className="block text-xs text-gray-500 mb-1">Compo</label>
                 <input
-                  type="number"
-                  min="0" max="20" step="0.25"
+                  type="text"
+                  inputMode="decimal"
                   value={sub.composition}
                   onChange={(e) => handleSubjectChange(semester, sub.id, 'composition', e.target.value)}
                   className="w-full bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                  placeholder="/20"
+                  placeholder="/20 ou non"
                 />
               </div>
             </div>

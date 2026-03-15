@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { Download, X } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { Download, X, Loader2 } from 'lucide-react';
 import { StudentInfo, Subject } from '../types';
 import { calculateSubjectAverage, calculateSemesterAverage, formatNumber } from '../utils';
 import html2canvas from 'html2canvas';
@@ -16,6 +16,7 @@ interface Props {
 
 export default function BulletinModal({ isOpen, onClose, studentInfo, semesterName, subjects, annualAverage }: Props) {
   const printRef = useRef<HTMLDivElement>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   if (!isOpen) return null;
 
@@ -25,10 +26,28 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
     const element = printRef.current;
     if (!element) return;
 
+    setIsGenerating(true);
     try {
-      const canvas = await html2canvas(element, { scale: 2 });
-      const data = canvas.toDataURL('image/png');
+      // Temporarily remove constraints to allow full capture
+      const parent = element.parentElement;
+      const originalOverflow = parent?.style.overflow;
+      if (parent) {
+        parent.style.overflow = 'visible';
+      }
 
+      const canvas = await html2canvas(element, { 
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
+      });
+
+      if (parent && originalOverflow !== undefined) {
+        parent.style.overflow = originalOverflow;
+      }
+
+      const data = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'px',
@@ -43,6 +62,9 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
       pdf.save(`Bulletin_${studentInfo.firstName}_${studentInfo.lastName}_${semesterName}.pdf`);
     } catch (error) {
       console.error('Failed to generate PDF', error);
+      alert("Erreur lors de la génération du PDF. Veuillez réessayer.");
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -136,10 +158,11 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
         <div className="p-4 border-t shrink-0 flex justify-end">
           <button
             onClick={handleDownloadPdf}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+            disabled={isGenerating}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white px-6 py-2 rounded-lg font-medium transition-colors"
           >
-            <Download className="w-5 h-5" />
-            Télécharger PDF
+            {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
+            {isGenerating ? 'Génération...' : 'Télécharger PDF'}
           </button>
         </div>
       </div>
