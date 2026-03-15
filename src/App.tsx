@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StudentInfo, Subject, HistoryRecord } from './types';
 import { calculateSemesterAverage, formatNumber } from './utils';
 import BulletinModal from './components/BulletinModal';
+import AdBanner from './components/AdBanner';
 import { BookOpen, User, Calculator, FileText, GraduationCap, Plus, Trash2, Clock, Save } from 'lucide-react';
 
 const DEFAULT_SUBJECTS: Subject[] = [
@@ -402,6 +403,9 @@ export default function App() {
             </div>
           </div>
         )}
+
+        {/* Espace publicitaire AdSense */}
+        <AdBanner />
       </main>
 
       {/* Bottom Navigation */}
