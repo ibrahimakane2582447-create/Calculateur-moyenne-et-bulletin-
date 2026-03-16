@@ -100,59 +100,59 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
   let totalCoef = 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl my-8 flex flex-col max-h-[90vh]">
-        <div className="flex justify-between items-center p-4 border-b shrink-0">
-          <h2 className="text-xl font-bold text-gray-800">Aperçu du Bulletin</h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
-            <X className="w-6 h-6 text-gray-600" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4 overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl my-4 flex flex-col max-h-[95vh]">
+        <div className="flex justify-between items-center p-3 border-b shrink-0">
+          <h2 className="text-lg font-bold text-gray-800">Aperçu du Bulletin</h2>
+          <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-full">
+            <X className="w-5 h-5 text-gray-600" />
           </button>
         </div>
         
-        <div className="p-4 overflow-y-auto grow bg-gray-50">
-          <div ref={printRef} className="bg-white p-10 border border-gray-200 shadow-sm mx-auto" style={{ width: '100%', maxWidth: '800px', minHeight: '1050px' }}>
+        <div className="p-3 sm:p-4 overflow-y-auto grow bg-gray-50">
+          <div ref={printRef} className="bg-white p-6 sm:p-8 border border-gray-200 shadow-sm mx-auto" style={{ width: '100%', maxWidth: '750px' }}>
             {/* Header */}
-            <div className="flex justify-between items-start mb-8 border-b-2 border-indigo-800 pb-6">
-              <div className="flex items-center gap-3">
-                <div className="bg-indigo-600 p-3 rounded-xl">
-                  <GraduationCap className="w-10 h-10 text-white" />
+            <div className="flex justify-between items-start mb-5 border-b-2 border-indigo-800 pb-4">
+              <div className="flex items-center gap-2">
+                <div className="bg-indigo-600 p-2 rounded-lg">
+                  <GraduationCap className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-black uppercase tracking-wider text-gray-900">République de l'Éducation</h1>
-                  <p className="text-sm text-gray-600 font-medium">Ministère de l'Enseignement</p>
+                  <h1 className="text-base sm:text-lg font-black uppercase tracking-wider text-gray-900">République de l'Éducation</h1>
+                  <p className="text-[10px] sm:text-xs text-gray-600 font-medium">Ministère de l'Enseignement</p>
                 </div>
               </div>
               <div className="text-right">
-                <h2 className="text-2xl font-bold text-indigo-800 uppercase">Bulletin de Notes</h2>
-                <p className="text-lg text-gray-700 font-semibold mt-1">{semesterName}</p>
-                <p className="text-sm text-gray-500 mt-1">Année Scolaire : {studentInfo.schoolYear || '2025-2026'}</p>
+                <h2 className="text-base sm:text-lg font-bold text-indigo-800 uppercase">Bulletin de Notes</h2>
+                <p className="text-xs sm:text-sm text-gray-700 font-semibold mt-0.5">{semesterName}</p>
+                <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">Année Scolaire : {studentInfo.schoolYear || '2025-2026'}</p>
               </div>
             </div>
 
             {/* Student Info */}
-            <div className="flex justify-between mb-8 text-gray-800 bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <div className="flex justify-between mb-5 text-gray-800 bg-gray-50 p-3 rounded-lg border border-gray-200">
               <div>
-                <p className="text-sm text-gray-500 uppercase tracking-wider mb-1">Élève</p>
-                <p className="text-lg"><span className="font-bold">Nom :</span> {studentInfo.lastName.toUpperCase()}</p>
-                <p className="text-lg"><span className="font-bold">Prénom :</span> {studentInfo.firstName}</p>
+                <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Élève</p>
+                <p className="text-xs sm:text-sm"><span className="font-bold">Nom :</span> {studentInfo.lastName.toUpperCase()}</p>
+                <p className="text-xs sm:text-sm"><span className="font-bold">Prénom :</span> {studentInfo.firstName}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm text-gray-500 uppercase tracking-wider mb-1">Classe</p>
-                <p className="text-xl font-bold text-indigo-700">{studentInfo.className || 'Non précisée'}</p>
+                <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Classe</p>
+                <p className="text-sm sm:text-base font-bold text-indigo-700">{studentInfo.className || 'Non précisée'}</p>
               </div>
             </div>
 
             {/* Grades Table */}
-            <table className="w-full mb-8 border-collapse text-sm">
+            <table className="w-full mb-5 border-collapse text-[10px] sm:text-xs">
               <thead>
                 <tr className="bg-indigo-50 border-y-2 border-indigo-800">
-                  <th className="text-left py-3 px-2 font-bold text-indigo-900">Matière</th>
-                  <th className="text-center py-3 px-2 font-bold text-indigo-900">Devoirs</th>
-                  <th className="text-center py-3 px-2 font-bold text-indigo-900">Compo</th>
-                  <th className="text-center py-3 px-2 font-bold text-indigo-900">Moy.</th>
-                  <th className="text-center py-3 px-2 font-bold text-indigo-900">Coef</th>
-                  <th className="text-center py-3 px-2 font-bold text-indigo-900">Total</th>
-                  <th className="text-left py-3 px-2 font-bold text-indigo-900">Appréciation</th>
+                  <th className="text-left py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Matière</th>
+                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Devoirs</th>
+                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Compo</th>
+                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Moy.</th>
+                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Coef</th>
+                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Total</th>
+                  <th className="text-left py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Appréciation</th>
                 </tr>
               </thead>
               <tbody>
@@ -171,43 +171,43 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
 
                   return (
                     <tr key={sub.id} className="border-b border-gray-200 hover:bg-gray-50">
-                      <td className="py-3 px-2 font-bold text-gray-800">{sub.name}</td>
-                      <td className="text-center py-3 px-2 text-gray-600">{devoirsStr}</td>
-                      <td className="text-center py-3 px-2 text-gray-600">{compoStr}</td>
-                      <td className="text-center py-3 px-2 font-bold text-gray-900">{formatNumber(avg)}</td>
-                      <td className="text-center py-3 px-2 text-gray-600">{sub.coef}</td>
-                      <td className="text-center py-3 px-2 font-bold text-indigo-600">{avg !== null ? formatNumber(avg * sub.coef) : '-'}</td>
-                      <td className="text-left py-3 px-2 text-gray-600 italic text-xs">{getAppreciation(avg)}</td>
+                      <td className="py-1.5 px-1 sm:px-2 font-bold text-gray-800">{sub.name}</td>
+                      <td className="text-center py-1.5 px-1 sm:px-2 text-gray-600">{devoirsStr}</td>
+                      <td className="text-center py-1.5 px-1 sm:px-2 text-gray-600">{compoStr}</td>
+                      <td className="text-center py-1.5 px-1 sm:px-2 font-bold text-gray-900">{formatNumber(avg)}</td>
+                      <td className="text-center py-1.5 px-1 sm:px-2 text-gray-600">{sub.coef}</td>
+                      <td className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-600">{avg !== null ? formatNumber(avg * sub.coef) : '-'}</td>
+                      <td className="text-left py-1.5 px-1 sm:px-2 text-gray-600 italic text-[9px] sm:text-[10px]">{getAppreciation(avg)}</td>
                     </tr>
                   );
                 })}
               </tbody>
               <tfoot>
                 <tr className="bg-gray-50 border-t-2 border-gray-800 font-bold">
-                  <td colSpan={4} className="py-3 px-2 text-right text-gray-700">TOTAL :</td>
-                  <td className="text-center py-3 px-2 text-gray-900">{totalCoef}</td>
-                  <td className="text-center py-3 px-2 text-indigo-700">{formatNumber(totalPoints)}</td>
+                  <td colSpan={4} className="py-2 px-1 sm:px-2 text-right text-gray-700">TOTAL :</td>
+                  <td className="text-center py-2 px-1 sm:px-2 text-gray-900">{totalCoef}</td>
+                  <td className="text-center py-2 px-1 sm:px-2 text-indigo-700">{formatNumber(totalPoints)}</td>
                   <td></td>
                 </tr>
               </tfoot>
             </table>
 
             {/* Summary */}
-            <div className="flex justify-end mb-12">
-              <div className="w-2/3 bg-indigo-50 p-5 rounded-xl border border-indigo-100 shadow-sm">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="font-bold text-gray-700 text-lg">Moyenne du Semestre :</span>
+            <div className="flex justify-end mb-8">
+              <div className="w-full sm:w-2/3 bg-indigo-50 p-3 sm:p-4 rounded-lg border border-indigo-100 shadow-sm">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-bold text-gray-700 text-xs sm:text-sm">Moyenne du Semestre :</span>
                   <div className="text-right">
-                    <span className="text-2xl font-black text-indigo-700">{formatNumber(semesterAverage)} / 20</span>
-                    <p className="text-sm font-bold text-indigo-600 mt-1">Mention : {semesterMention}</p>
+                    <span className="text-base sm:text-lg font-black text-indigo-700">{formatNumber(semesterAverage)} / 20</span>
+                    <p className="text-[10px] sm:text-xs font-bold text-indigo-600 mt-0.5">Mention : {semesterMention}</p>
                   </div>
                 </div>
                 {annualAverage !== undefined && (
-                  <div className="flex justify-between items-center pt-3 border-t border-indigo-200">
-                    <span className="font-bold text-gray-700 text-lg">Moyenne Annuelle :</span>
+                  <div className="flex justify-between items-center pt-2 border-t border-indigo-200">
+                    <span className="font-bold text-gray-700 text-xs sm:text-sm">Moyenne Annuelle :</span>
                     <div className="text-right">
-                      <span className="text-2xl font-black text-emerald-600">{formatNumber(annualAverage)} / 20</span>
-                      <p className="text-sm font-bold text-emerald-600 mt-1">Mention : {annualMention}</p>
+                      <span className="text-base sm:text-lg font-black text-emerald-600">{formatNumber(annualAverage)} / 20</span>
+                      <p className="text-[10px] sm:text-xs font-bold text-emerald-600 mt-0.5">Mention : {annualMention}</p>
                     </div>
                   </div>
                 )}
@@ -215,32 +215,32 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
             </div>
             
             {/* Signatures */}
-            <div className="mt-auto pt-8 flex justify-between px-12">
+            <div className="mt-6 pt-4 flex justify-between px-4 sm:px-8 text-[10px] sm:text-xs">
               <div className="text-center">
-                <p className="font-bold text-gray-800 border-t border-gray-400 pt-2 w-40">Le Professeur Principal</p>
+                <p className="font-bold text-gray-800 border-t border-gray-400 pt-1 w-24 sm:w-32">Le Professeur Principal</p>
               </div>
               <div className="text-center">
-                <p className="font-bold text-gray-800 border-t border-gray-400 pt-2 w-40">Le Chef d'Établissement</p>
+                <p className="font-bold text-gray-800 border-t border-gray-400 pt-1 w-24 sm:w-32">Le Chef d'Établissement</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="p-4 border-t shrink-0 flex justify-end gap-3 bg-gray-50 rounded-b-xl">
+        <div className="p-3 border-t shrink-0 flex justify-end gap-2 bg-gray-50 rounded-b-xl">
           <button
             onClick={handleDownloadImage}
             disabled={isGenerating}
-            className="flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 text-gray-700 px-6 py-2 rounded-lg font-medium transition-colors shadow-sm"
+            className="flex items-center gap-1.5 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
           >
-            {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <ImageIcon className="w-5 h-5" />}
+            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
             Image (PNG)
           </button>
           <button
             onClick={handleDownloadPdf}
             disabled={isGenerating}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm"
+            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
           >
-            {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
+            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             Document (PDF)
           </button>
         </div>
