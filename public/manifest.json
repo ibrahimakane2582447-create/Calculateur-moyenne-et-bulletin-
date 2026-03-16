@@ -3,9 +3,9 @@
   "name": "Calcule mes notes",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/graduation-cap.svg",
+      "src": "/icon.svg",
       "type": "image/svg+xml",
-      "sizes": "512x512",
+      "sizes": "192x192 512x512",
       "purpose": "any maskable"
     }
   ],

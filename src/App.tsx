@@ -161,6 +161,7 @@ export default function App() {
                 <input
                   type="text"
                   inputMode="decimal"
+                  list="notes-options"
                   value={sub.devoir1}
                   onChange={(e) => handleSubjectChange(semester, sub.id, 'devoir1', e.target.value)}
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
@@ -172,6 +173,7 @@ export default function App() {
                 <input
                   type="text"
                   inputMode="decimal"
+                  list="notes-options"
                   value={sub.devoir2}
                   onChange={(e) => handleSubjectChange(semester, sub.id, 'devoir2', e.target.value)}
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
@@ -183,6 +185,7 @@ export default function App() {
                 <input
                   type="text"
                   inputMode="decimal"
+                  list="notes-options"
                   value={sub.composition}
                   onChange={(e) => handleSubjectChange(semester, sub.id, 'composition', e.target.value)}
                   className="w-full bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
@@ -286,6 +289,10 @@ export default function App() {
 
       {/* Main Content */}
       <main className="max-w-md mx-auto px-4 mt-6">
+        <datalist id="notes-options">
+          <option value="non">Non évalué</option>
+        </datalist>
+
         {activeTab === 'S1' && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
             <div className="flex items-center gap-2 mb-4">

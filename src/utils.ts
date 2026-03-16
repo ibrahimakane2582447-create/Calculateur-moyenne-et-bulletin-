@@ -60,3 +60,23 @@ export const formatNumber = (num: number | null): string => {
   if (num === null) return '-';
   return num.toFixed(2);
 };
+
+export const getMention = (average: number | null): string => {
+  if (average === null) return '-';
+  if (average >= 16) return 'Très Bien';
+  if (average >= 14) return 'Bien';
+  if (average >= 12) return 'Assez Bien';
+  if (average >= 10) return 'Passable';
+  if (average >= 8) return 'Insuffisant';
+  return 'Faible';
+};
+
+export const getAppreciation = (average: number | null): string => {
+  if (average === null) return 'Non évalué';
+  if (average >= 16) return 'Excellent travail';
+  if (average >= 14) return 'Bon travail';
+  if (average >= 12) return 'Assez bien, continuez';
+  if (average >= 10) return 'Passable, peut mieux faire';
+  if (average >= 8) return 'Insuffisant, des efforts sont attendus';
+  return 'Faible, ressaisissez-vous';
+};
