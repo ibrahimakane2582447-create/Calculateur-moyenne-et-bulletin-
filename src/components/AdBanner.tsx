@@ -2,8 +2,18 @@ import React, { useEffect } from 'react';
 
 export default function AdBanner() {
   useEffect(() => {
+    // 1. Injecter le script dynamiquement s'il n'est pas déjà présent
+    let script = document.querySelector('script[src*="adsbygoogle.js"]');
+    if (!script) {
+      const newScript = document.createElement('script');
+      newScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8106079340317111";
+      newScript.async = true;
+      newScript.crossOrigin = "anonymous";
+      document.head.appendChild(newScript);
+    }
+
+    // 2. Initialiser la publicité
     try {
-      // Push the ad only if it hasn't been initialized in this container
       // @ts-ignore
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (err) {
