@@ -237,13 +237,11 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
                   <GraduationCap className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-base sm:text-lg font-black uppercase tracking-wider text-gray-900">République de l'Éducation</h1>
-                  <p className="text-[10px] sm:text-xs text-gray-600 font-medium">Ministère de l'Enseignement</p>
+                  <h1 className="text-base sm:text-lg font-black uppercase tracking-wider text-gray-900">Bulletin de Notes</h1>
+                  <p className="text-[10px] sm:text-xs text-gray-600 font-medium">{semesterName}</p>
                 </div>
               </div>
               <div className="text-right">
-                <h2 className="text-base sm:text-lg font-bold text-indigo-800 uppercase">Bulletin de Notes</h2>
-                <p className="text-xs sm:text-sm text-gray-700 font-semibold mt-0.5">{semesterName}</p>
                 <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">Année Scolaire : {studentInfo.schoolYear || '2025-2026'}</p>
               </div>
             </div>
@@ -333,24 +331,24 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
               </div>
             </div>
             
-            {/* Signatures */}
-            <div className="mt-6 pt-4 flex justify-between px-4 sm:px-8 text-[10px] sm:text-xs">
-              <div className="text-center">
-                <p className="font-bold text-gray-800 border-t border-gray-400 pt-1 w-24 sm:w-32">Le Professeur Principal</p>
-              </div>
-              <div className="text-center">
-                <p className="font-bold text-gray-800 border-t border-gray-400 pt-1 w-24 sm:w-32">Le Chef d'Établissement</p>
-              </div>
-            </div>
+            {/* Signatures removed */}
           </div>
         </div>
 
-        <div className="p-3 border-t shrink-0 flex justify-center gap-2 bg-gray-50 rounded-b-xl">
+        <div className="p-3 border-t shrink-0 flex flex-wrap justify-center gap-2 bg-gray-50 rounded-b-xl">
           <button
             onClick={onClose}
             className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg text-sm font-bold transition-colors"
           >
             Fermer
+          </button>
+          <button
+            onClick={handleDownloadImage}
+            disabled={isGenerating}
+            className="flex items-center gap-1.5 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 text-gray-700 px-6 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm"
+          >
+            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
+            Télécharger Image
           </button>
           <button
             onClick={handlePrint}
