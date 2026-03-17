@@ -31,16 +31,19 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
     try {
       // Ensure the element is visible and has dimensions
       const canvas = await html2canvas(element, { 
-        scale: 2, // Reduced from 3 to avoid memory issues on some devices
+        scale: 2, 
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
         logging: false,
+        width: element.offsetWidth,
+        height: element.offsetHeight,
         onclone: (clonedDoc) => {
-          // You can modify the cloned document here if needed
           const clonedElement = clonedDoc.getElementById('bulletin-to-print');
           if (clonedElement) {
             clonedElement.style.display = 'block';
+            clonedElement.style.margin = '0';
+            clonedElement.style.padding = '40px'; // Add some padding for the capture
           }
         }
       });
@@ -55,36 +58,36 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
     setIsGenerating(true);
     try {
       const canvas = await generateCanvas();
-      if (!canvas) {
-        throw new Error('Canvas generation failed');
-      }
+      if (!canvas) throw new Error('Canvas generation failed');
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      const pdf = new jsPDF({
-        orientation: 'p',
-        unit: 'px',
-        format: 'a4',
-        hotfixes: ['px_scaling']
-      });
-
+      const imgData = canvas.toDataURL('image/png');
+      
+      // A4 dimensions in mm: 210 x 297
+      const pdf = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
-      const imgProps = pdf.getImageProperties(imgData);
-      const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
+      // Calculate dimensions to fit the page while maintaining aspect ratio
+      const margin = 10; // 10mm margin
+      const imgWidth = pdfWidth - (margin * 2);
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
       
-      const width = imgProps.width * ratio;
-      const height = imgProps.height * ratio;
+      let finalWidth = imgWidth;
+      let finalHeight = imgHeight;
       
-      // Center the image
-      const x = (pdfWidth - width) / 2;
-      const y = 0;
+      if (finalHeight > pdfHeight - (margin * 2)) {
+        finalHeight = pdfHeight - (margin * 2);
+        finalWidth = (canvas.width * finalHeight) / canvas.height;
+      }
 
-      pdf.addImage(imgData, 'JPEG', x, y, width, height);
+      const x = (pdfWidth - finalWidth) / 2;
+      const y = margin;
+
+      pdf.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
       pdf.save(`Bulletin_${studentInfo.firstName}_${studentInfo.lastName}.pdf`);
     } catch (error) {
-      console.error('Failed to generate PDF', error);
-      alert("Désolé, une erreur est survenue lors de la création du PDF. Essayez de prendre une capture d'écran ou d'utiliser le bouton Image.");
+      console.error('Failed to generate PDF:', error);
+      alert("Erreur lors de la création du PDF. Essayez d'utiliser le bouton 'Image (PNG)' si le PDF ne fonctionne pas.");
     } finally {
       setIsGenerating(false);
     }
@@ -94,9 +97,7 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
     setIsGenerating(true);
     try {
       const canvas = await generateCanvas();
-      if (!canvas) {
-        throw new Error('Canvas generation failed');
-      }
+      if (!canvas) throw new Error('Canvas generation failed');
 
       const data = canvas.toDataURL('image/png');
       const link = document.createElement('a');
@@ -104,7 +105,7 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
       link.href = data;
       link.click();
     } catch (error) {
-      console.error('Failed to generate Image', error);
+      console.error('Failed to generate Image:', error);
       alert("Erreur lors de la génération de l'image.");
     } finally {
       setIsGenerating(false);
