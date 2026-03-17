@@ -15,6 +15,15 @@ input {
 }
 
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 15mm;
+  }
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: white !important;
+  }
   body * {
     visibility: hidden;
   }
@@ -26,11 +35,14 @@ input {
     left: 0;
     top: 0;
     width: 100% !important;
-    max-width: none !important;
+    max-width: 100% !important;
     margin: 0 !important;
-    padding: 20px !important;
+    padding: 0 !important;
     border: none !important;
     box-shadow: none !important;
+    background-color: white !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
   .no-print {
     display: none !important;

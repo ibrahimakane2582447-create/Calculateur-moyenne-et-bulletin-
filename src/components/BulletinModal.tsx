@@ -216,7 +216,7 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
             ref={printRef} 
             onClick={handleDownloadImage}
             title="Cliquez pour télécharger comme image"
-            className={`bg-white p-6 sm:p-8 border border-gray-200 shadow-sm mx-auto cursor-pointer transition-transform active:scale-[0.99] relative group ${isGenerating ? 'opacity-70 pointer-events-none' : ''}`}
+            className={`bg-white p-6 sm:p-8 border border-gray-200 shadow-sm mx-auto cursor-pointer transition-transform active:scale-[0.99] relative group print:p-0 print:border-none print:shadow-none print:max-w-none ${isGenerating ? 'opacity-70 pointer-events-none' : ''}`}
             style={{ width: '100%', maxWidth: '750px' }}
           >
             {isGenerating && (
@@ -231,45 +231,45 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
             </div>
 
             {/* Header */}
-            <div className="flex justify-between items-start mb-5 border-b-2 border-indigo-800 pb-4">
-              <div className="flex items-center gap-2">
-                <div className="bg-indigo-600 p-2 rounded-lg">
-                  <GraduationCap className="w-6 h-6 text-white" />
+            <div className="flex justify-between items-start mb-5 border-b-2 border-indigo-800 pb-4 print:mb-8 print:pb-6">
+              <div className="flex items-center gap-2 print:gap-4">
+                <div className="bg-indigo-600 p-2 rounded-lg print:bg-transparent print:p-0">
+                  <GraduationCap className="w-6 h-6 text-white print:text-indigo-800 print:w-10 print:h-10" />
                 </div>
                 <div>
-                  <h1 className="text-base sm:text-lg font-black uppercase tracking-wider text-gray-900">Bulletin de Notes</h1>
-                  <p className="text-[10px] sm:text-xs text-gray-600 font-medium">{semesterName}</p>
+                  <h1 className="text-base sm:text-lg font-black uppercase tracking-wider text-gray-900 print:text-2xl">Bulletin de Notes</h1>
+                  <p className="text-[10px] sm:text-xs text-gray-600 font-medium print:text-base">{semesterName}</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">Année Scolaire : {studentInfo.schoolYear || '2025-2026'}</p>
+                <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5 print:text-base">Année Scolaire : {studentInfo.schoolYear || '2025-2026'}</p>
               </div>
             </div>
 
             {/* Student Info */}
-            <div className="flex justify-between mb-5 text-gray-800 bg-gray-50 p-3 rounded-lg border border-gray-200">
+            <div className="flex justify-between mb-5 text-gray-800 bg-gray-50 p-3 rounded-lg border border-gray-200 print:bg-transparent print:border-none print:p-0 print:mb-8">
               <div>
-                <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Élève</p>
-                <p className="text-xs sm:text-sm"><span className="font-bold">Nom :</span> {studentInfo.lastName.toUpperCase()}</p>
-                <p className="text-xs sm:text-sm"><span className="font-bold">Prénom :</span> {studentInfo.firstName}</p>
+                <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-wider mb-0.5 print:text-sm">Élève</p>
+                <p className="text-xs sm:text-sm print:text-lg"><span className="font-bold">Nom :</span> {studentInfo.lastName.toUpperCase()}</p>
+                <p className="text-xs sm:text-sm print:text-lg"><span className="font-bold">Prénom :</span> {studentInfo.firstName}</p>
               </div>
               <div className="text-right">
-                <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Classe</p>
-                <p className="text-sm sm:text-base font-bold text-indigo-700">{studentInfo.className || 'Non précisée'}</p>
+                <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-wider mb-0.5 print:text-sm">Classe</p>
+                <p className="text-sm sm:text-base font-bold text-indigo-700 print:text-xl">{studentInfo.className || 'Non précisée'}</p>
               </div>
             </div>
 
             {/* Grades Table */}
-            <table className="w-full mb-5 border-collapse text-[10px] sm:text-xs">
+            <table className="w-full mb-5 border-collapse text-[10px] sm:text-xs print:text-sm">
               <thead>
-                <tr className="bg-indigo-50 border-y-2 border-indigo-800">
-                  <th className="text-left py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Matière</th>
-                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Devoirs</th>
-                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Compo</th>
-                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Moy.</th>
-                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Coef</th>
-                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Total</th>
-                  <th className="text-left py-1.5 px-1 sm:px-2 font-bold text-indigo-900">Appréciation</th>
+                <tr className="bg-indigo-50 border-y-2 border-indigo-800 print:bg-transparent print:border-b-2 print:border-t-0">
+                  <th className="text-left py-1.5 px-1 sm:px-2 font-bold text-indigo-900 print:py-3 print:text-base">Matière</th>
+                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900 print:py-3 print:text-base">Devoirs</th>
+                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900 print:py-3 print:text-base">Compo</th>
+                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900 print:py-3 print:text-base">Moy.</th>
+                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900 print:py-3 print:text-base">Coef</th>
+                  <th className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-900 print:py-3 print:text-base">Total</th>
+                  <th className="text-left py-1.5 px-1 sm:px-2 font-bold text-indigo-900 print:py-3 print:text-base">Appréciation</th>
                 </tr>
               </thead>
               <tbody>
@@ -287,44 +287,44 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
                   }
 
                   return (
-                    <tr key={sub.id} className="border-b border-gray-200 hover:bg-gray-50">
-                      <td className="py-1.5 px-1 sm:px-2 font-bold text-gray-800">{sub.name}</td>
-                      <td className="text-center py-1.5 px-1 sm:px-2 text-gray-600">{devoirsStr}</td>
-                      <td className="text-center py-1.5 px-1 sm:px-2 text-gray-600">{compoStr}</td>
-                      <td className="text-center py-1.5 px-1 sm:px-2 font-bold text-gray-900">{formatNumber(avg)}</td>
-                      <td className="text-center py-1.5 px-1 sm:px-2 text-gray-600">{sub.coef}</td>
-                      <td className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-600">{avg !== null ? formatNumber(avg * sub.coef) : '-'}</td>
-                      <td className="text-left py-1.5 px-1 sm:px-2 text-gray-600 italic text-[9px] sm:text-[10px]">{getAppreciation(avg)}</td>
+                    <tr key={sub.id} className="border-b border-gray-200 hover:bg-gray-50 print:border-gray-300">
+                      <td className="py-1.5 px-1 sm:px-2 font-bold text-gray-800 print:py-3 print:text-base">{sub.name}</td>
+                      <td className="text-center py-1.5 px-1 sm:px-2 text-gray-600 print:py-3 print:text-base">{devoirsStr}</td>
+                      <td className="text-center py-1.5 px-1 sm:px-2 text-gray-600 print:py-3 print:text-base">{compoStr}</td>
+                      <td className="text-center py-1.5 px-1 sm:px-2 font-bold text-gray-900 print:py-3 print:text-base">{formatNumber(avg)}</td>
+                      <td className="text-center py-1.5 px-1 sm:px-2 text-gray-600 print:py-3 print:text-base">{sub.coef}</td>
+                      <td className="text-center py-1.5 px-1 sm:px-2 font-bold text-indigo-600 print:py-3 print:text-base">{avg !== null ? formatNumber(avg * sub.coef) : '-'}</td>
+                      <td className="text-left py-1.5 px-1 sm:px-2 text-gray-600 italic text-[9px] sm:text-[10px] print:py-3 print:text-sm">{getAppreciation(avg)}</td>
                     </tr>
                   );
                 })}
               </tbody>
               <tfoot>
-                <tr className="bg-gray-50 border-t-2 border-gray-800 font-bold">
-                  <td colSpan={4} className="py-2 px-1 sm:px-2 text-right text-gray-700">TOTAL :</td>
-                  <td className="text-center py-2 px-1 sm:px-2 text-gray-900">{totalCoef}</td>
-                  <td className="text-center py-2 px-1 sm:px-2 text-indigo-700">{formatNumber(totalPoints)}</td>
+                <tr className="bg-gray-50 border-t-2 border-gray-800 font-bold print:bg-transparent">
+                  <td colSpan={4} className="py-2 px-1 sm:px-2 text-right text-gray-700 print:py-4 print:text-base">TOTAL :</td>
+                  <td className="text-center py-2 px-1 sm:px-2 text-gray-900 print:py-4 print:text-base">{totalCoef}</td>
+                  <td className="text-center py-2 px-1 sm:px-2 text-indigo-700 print:py-4 print:text-base">{formatNumber(totalPoints)}</td>
                   <td></td>
                 </tr>
               </tfoot>
             </table>
 
             {/* Summary */}
-            <div className="flex justify-end mb-8">
-              <div className="w-full sm:w-2/3 bg-indigo-50 p-3 sm:p-4 rounded-lg border border-indigo-100 shadow-sm">
+            <div className="flex justify-end mb-8 print:mt-8">
+              <div className="w-full sm:w-2/3 bg-indigo-50 p-3 sm:p-4 rounded-lg border border-indigo-100 shadow-sm print:bg-transparent print:border-2 print:border-indigo-800 print:shadow-none">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="font-bold text-gray-700 text-xs sm:text-sm">Moyenne du Semestre :</span>
+                  <span className="font-bold text-gray-700 text-xs sm:text-sm print:text-lg">Moyenne du Semestre :</span>
                   <div className="text-right">
-                    <span className="text-base sm:text-lg font-black text-indigo-700">{formatNumber(semesterAverage)} / 20</span>
-                    <p className="text-[10px] sm:text-xs font-bold text-indigo-600 mt-0.5">Mention : {semesterMention}</p>
+                    <span className="text-base sm:text-lg font-black text-indigo-700 print:text-2xl">{formatNumber(semesterAverage)} / 20</span>
+                    <p className="text-[10px] sm:text-xs font-bold text-indigo-600 mt-0.5 print:text-sm">Mention : {semesterMention}</p>
                   </div>
                 </div>
                 {annualAverage !== undefined && (
-                  <div className="flex justify-between items-center pt-2 border-t border-indigo-200">
-                    <span className="font-bold text-gray-700 text-xs sm:text-sm">Moyenne Annuelle :</span>
+                  <div className="flex justify-between items-center pt-2 border-t border-indigo-200 print:border-indigo-800">
+                    <span className="font-bold text-gray-700 text-xs sm:text-sm print:text-lg">Moyenne Annuelle :</span>
                     <div className="text-right">
-                      <span className="text-base sm:text-lg font-black text-emerald-600">{formatNumber(annualAverage)} / 20</span>
-                      <p className="text-[10px] sm:text-xs font-bold text-emerald-600 mt-0.5">Mention : {annualMention}</p>
+                      <span className="text-base sm:text-lg font-black text-emerald-600 print:text-2xl">{formatNumber(annualAverage)} / 20</span>
+                      <p className="text-[10px] sm:text-xs font-bold text-emerald-600 mt-0.5 print:text-sm">Mention : {annualMention}</p>
                     </div>
                   </div>
                 )}
