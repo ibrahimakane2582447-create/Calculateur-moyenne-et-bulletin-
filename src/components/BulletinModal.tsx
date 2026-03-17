@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Download, Image as ImageIcon, X, Loader2, GraduationCap } from 'lucide-react';
+import { Download, Image as ImageIcon, X, Loader2, GraduationCap, Share2 } from 'lucide-react';
 import { StudentInfo, Subject } from '../types';
 import { calculateSubjectAverage, calculateSemesterAverage, formatNumber, getMention, getAppreciation } from '../utils';
 import html2canvas from 'html2canvas';
@@ -36,14 +36,14 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
         allowTaint: true,
         backgroundColor: '#ffffff',
         logging: false,
-        width: element.offsetWidth,
-        height: element.offsetHeight,
+        width: element.scrollWidth,
+        height: element.scrollHeight,
         onclone: (clonedDoc) => {
           const clonedElement = clonedDoc.getElementById('bulletin-to-print');
           if (clonedElement) {
             clonedElement.style.display = 'block';
             clonedElement.style.margin = '0';
-            clonedElement.style.padding = '40px'; // Add some padding for the capture
+            clonedElement.style.padding = '20px';
           }
         }
       });
@@ -60,15 +60,13 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
       const canvas = await generateCanvas();
       if (!canvas) throw new Error('Canvas generation failed');
 
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
       
-      // A4 dimensions in mm: 210 x 297
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
-      // Calculate dimensions to fit the page while maintaining aspect ratio
-      const margin = 10; // 10mm margin
+      const margin = 10;
       const imgWidth = pdfWidth - (margin * 2);
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       
@@ -83,11 +81,11 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
       const x = (pdfWidth - finalWidth) / 2;
       const y = margin;
 
-      pdf.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
+      pdf.addImage(imgData, 'JPEG', x, y, finalWidth, finalHeight);
       pdf.save(`Bulletin_${studentInfo.firstName}_${studentInfo.lastName}.pdf`);
     } catch (error) {
       console.error('Failed to generate PDF:', error);
-      alert("Erreur lors de la création du PDF. Essayez d'utiliser le bouton 'Image (PNG)' si le PDF ne fonctionne pas.");
+      alert("Erreur lors de la création du PDF. Si cela persiste, utilisez le bouton 'Image (PNG)' ou 'Partager'.");
     } finally {
       setIsGenerating(false);
     }
@@ -107,6 +105,35 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
     } catch (error) {
       console.error('Failed to generate Image:', error);
       alert("Erreur lors de la génération de l'image.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleShare = async () => {
+    setIsGenerating(true);
+    try {
+      const canvas = await generateCanvas();
+      if (!canvas) throw new Error('Canvas generation failed');
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], `Bulletin_${studentInfo.firstName}.png`, { type: 'image/png' });
+
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Bulletin de Notes',
+          text: `Voici le bulletin de ${studentInfo.firstName} ${studentInfo.lastName}.`,
+        });
+      } else {
+        // Fallback for browsers that don't support file sharing
+        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`Voici le bulletin de ${studentInfo.firstName} ${studentInfo.lastName}.`)}`;
+        window.open(whatsappUrl, '_blank');
+      }
+    } catch (error) {
+      console.error('Sharing failed:', error);
+      alert("Le partage a échoué. Vous pouvez télécharger l'image et l'envoyer manuellement.");
     } finally {
       setIsGenerating(false);
     }
@@ -242,7 +269,15 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
           </div>
         </div>
 
-        <div className="p-3 border-t shrink-0 flex justify-end gap-2 bg-gray-50 rounded-b-xl">
+        <div className="p-3 border-t shrink-0 flex flex-wrap justify-end gap-2 bg-gray-50 rounded-b-xl">
+          <button
+            onClick={handleShare}
+            disabled={isGenerating}
+            className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
+          >
+            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+            Partager
+          </button>
           <button
             onClick={handleDownloadImage}
             disabled={isGenerating}
