@@ -202,13 +202,34 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
       <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl my-4 flex flex-col max-h-[95vh]">
         <div className="flex justify-between items-center p-3 border-b shrink-0">
           <h2 className="text-lg font-bold text-gray-800">Aperçu du Bulletin</h2>
-          <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-full">
-            <X className="w-5 h-5 text-gray-600" />
-          </button>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-indigo-600 font-medium hidden sm:inline">Cliquez sur le bulletin pour le télécharger</span>
+            <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-full">
+              <X className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
         </div>
         
         <div className="p-3 sm:p-4 overflow-y-auto grow bg-gray-50">
-          <div id="bulletin-to-print" ref={printRef} className="bg-white p-6 sm:p-8 border border-gray-200 shadow-sm mx-auto" style={{ width: '100%', maxWidth: '750px' }}>
+          <div 
+            id="bulletin-to-print" 
+            ref={printRef} 
+            onClick={handleDownloadImage}
+            title="Cliquez pour télécharger comme image"
+            className={`bg-white p-6 sm:p-8 border border-gray-200 shadow-sm mx-auto cursor-pointer transition-transform active:scale-[0.99] relative group ${isGenerating ? 'opacity-70 pointer-events-none' : ''}`}
+            style={{ width: '100%', maxWidth: '750px' }}
+          >
+            {isGenerating && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50 rounded-lg">
+                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+              </div>
+            )}
+            
+            {/* Hover Hint */}
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-indigo-600 text-white text-[10px] px-2 py-1 rounded shadow-md pointer-events-none">
+              Cliquez pour télécharger
+            </div>
+
             {/* Header */}
             <div className="flex justify-between items-start mb-5 border-b-2 border-indigo-800 pb-4">
               <div className="flex items-center gap-2">
@@ -324,45 +345,19 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
           </div>
         </div>
 
-        <div className="p-3 border-t shrink-0 flex flex-wrap justify-center sm:justify-end gap-2 bg-gray-50 rounded-b-xl">
+        <div className="p-3 border-t shrink-0 flex justify-center gap-2 bg-gray-50 rounded-b-xl">
+          <button
+            onClick={onClose}
+            className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg text-sm font-bold transition-colors"
+          >
+            Fermer
+          </button>
           <button
             onClick={handlePrint}
-            className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-900 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
+            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm"
           >
             <Printer className="w-4 h-4" />
-            Imprimer / PDF
-          </button>
-          <button
-            onClick={handleCapture}
-            disabled={isGenerating}
-            className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
-          >
-            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
-            Capture
-          </button>
-          <button
-            onClick={handleShare}
-            disabled={isGenerating}
-            className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
-          >
-            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
-            Partager
-          </button>
-          <button
-            onClick={handleDownloadImage}
-            disabled={isGenerating}
-            className="flex items-center gap-1.5 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
-          >
-            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
-            Image
-          </button>
-          <button
-            onClick={handleDownloadPdf}
-            disabled={isGenerating}
-            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
-          >
-            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-            PDF
+            Imprimer
           </button>
         </div>
       </div>
