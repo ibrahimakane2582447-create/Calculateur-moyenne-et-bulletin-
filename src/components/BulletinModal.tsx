@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Download, Image as ImageIcon, X, Loader2, GraduationCap, Share2 } from 'lucide-react';
+import { Download, Image as ImageIcon, X, Loader2, GraduationCap, Share2, Printer, Camera } from 'lucide-react';
 import { StudentInfo, Subject } from '../types';
 import { calculateSubjectAverage, calculateSemesterAverage, formatNumber, getMention, getAppreciation } from '../utils';
 import html2canvas from 'html2canvas';
@@ -24,14 +24,13 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
   const semesterMention = getMention(semesterAverage);
   const annualMention = annualAverage !== undefined ? getMention(annualAverage) : undefined;
 
-  const generateCanvas = async () => {
+  const generateCanvas = async (scale = 2) => {
     const element = printRef.current;
     if (!element) return null;
 
     try {
-      // Ensure the element is visible and has dimensions
       const canvas = await html2canvas(element, { 
-        scale: 2, 
+        scale: scale, 
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
@@ -44,6 +43,8 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
             clonedElement.style.display = 'block';
             clonedElement.style.margin = '0';
             clonedElement.style.padding = '20px';
+            clonedElement.style.boxShadow = 'none';
+            clonedElement.style.border = 'none';
           }
         }
       });
@@ -54,14 +55,17 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
     }
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   const handleDownloadPdf = async () => {
     setIsGenerating(true);
     try {
-      const canvas = await generateCanvas();
+      const canvas = await generateCanvas(1.5); // Lower scale for PDF to be safer
       if (!canvas) throw new Error('Canvas generation failed');
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      
+      const imgData = canvas.toDataURL('image/jpeg', 0.9);
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -85,7 +89,7 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
       pdf.save(`Bulletin_${studentInfo.firstName}_${studentInfo.lastName}.pdf`);
     } catch (error) {
       console.error('Failed to generate PDF:', error);
-      alert("Erreur lors de la création du PDF. Si cela persiste, utilisez le bouton 'Image (PNG)' ou 'Partager'.");
+      alert("La génération PDF a échoué. Essayez le bouton 'Imprimer' ou 'Capture'.");
     } finally {
       setIsGenerating(false);
     }
@@ -94,7 +98,7 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
   const handleDownloadImage = async () => {
     setIsGenerating(true);
     try {
-      const canvas = await generateCanvas();
+      const canvas = await generateCanvas(2);
       if (!canvas) throw new Error('Canvas generation failed');
 
       const data = canvas.toDataURL('image/png');
@@ -104,7 +108,20 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
       link.click();
     } catch (error) {
       console.error('Failed to generate Image:', error);
-      alert("Erreur lors de la génération de l'image.");
+      // Fallback: Open image in new tab
+      try {
+        const canvas = await generateCanvas(1);
+        if (canvas) {
+          const data = canvas.toDataURL('image/png');
+          const newWindow = window.open();
+          if (newWindow) {
+            newWindow.document.write(`<img src="${data}" style="width:100%" />`);
+            newWindow.document.title = "Bulletin - Capture";
+          }
+        }
+      } catch (e) {
+        alert("Erreur lors de la génération de l'image.");
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -113,7 +130,7 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
   const handleShare = async () => {
     setIsGenerating(true);
     try {
-      const canvas = await generateCanvas();
+      const canvas = await generateCanvas(1.5);
       if (!canvas) throw new Error('Canvas generation failed');
 
       const dataUrl = canvas.toDataURL('image/png');
@@ -127,13 +144,51 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
           text: `Voici le bulletin de ${studentInfo.firstName} ${studentInfo.lastName}.`,
         });
       } else {
-        // Fallback for browsers that don't support file sharing
         const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`Voici le bulletin de ${studentInfo.firstName} ${studentInfo.lastName}.`)}`;
         window.open(whatsappUrl, '_blank');
       }
     } catch (error) {
       console.error('Sharing failed:', error);
-      alert("Le partage a échoué. Vous pouvez télécharger l'image et l'envoyer manuellement.");
+      alert("Le partage a échoué. Utilisez le bouton 'Imprimer' ou 'Capture'.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleCapture = async () => {
+    setIsGenerating(true);
+    try {
+      const canvas = await generateCanvas(2);
+      if (!canvas) throw new Error('Canvas generation failed');
+
+      const data = canvas.toDataURL('image/png');
+      const newWindow = window.open();
+      if (newWindow) {
+        newWindow.document.write(`
+          <html>
+            <head>
+              <title>Bulletin - Capture d'écran</title>
+              <style>
+                body { margin: 0; display: flex; justify-content: center; background: #f0f0f0; font-family: sans-serif; }
+                .container { background: white; padding: 20px; box-shadow: 0 0 20px rgba(0,0,0,0.1); max-width: 100%; }
+                img { max-width: 100%; height: auto; }
+                .instructions { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 20px; font-size: 14px; z-index: 100; }
+              </style>
+            </head>
+            <body>
+              <div class="instructions">Maintenez l'image pour l'enregistrer ou faites une capture d'écran</div>
+              <div class="container">
+                <img src="${data}" />
+              </div>
+            </body>
+          </html>
+        `);
+      } else {
+        alert("Le bloqueur de fenêtres a empêché l'ouverture de la capture. Autorisez les fenêtres surgissantes.");
+      }
+    } catch (error) {
+      console.error('Capture failed:', error);
+      alert("La capture a échoué.");
     } finally {
       setIsGenerating(false);
     }
@@ -143,7 +198,7 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
   let totalCoef = 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4 overflow-y-auto no-print">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl my-4 flex flex-col max-h-[95vh]">
         <div className="flex justify-between items-center p-3 border-b shrink-0">
           <h2 className="text-lg font-bold text-gray-800">Aperçu du Bulletin</h2>
@@ -269,11 +324,26 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
           </div>
         </div>
 
-        <div className="p-3 border-t shrink-0 flex flex-wrap justify-end gap-2 bg-gray-50 rounded-b-xl">
+        <div className="p-3 border-t shrink-0 flex flex-wrap justify-center sm:justify-end gap-2 bg-gray-50 rounded-b-xl">
+          <button
+            onClick={handlePrint}
+            className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-900 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
+          >
+            <Printer className="w-4 h-4" />
+            Imprimer / PDF
+          </button>
+          <button
+            onClick={handleCapture}
+            disabled={isGenerating}
+            className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
+          >
+            {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
+            Capture
+          </button>
           <button
             onClick={handleShare}
             disabled={isGenerating}
-            className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
+            className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
           >
             {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
             Partager
@@ -281,18 +351,18 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
           <button
             onClick={handleDownloadImage}
             disabled={isGenerating}
-            className="flex items-center gap-1.5 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
+            className="flex items-center gap-1.5 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
           >
             {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
-            Image (PNG)
+            Image
           </button>
           <button
             onClick={handleDownloadPdf}
             disabled={isGenerating}
-            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
+            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
           >
             {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-            Document (PDF)
+            PDF
           </button>
         </div>
       </div>

@@ -13,3 +13,26 @@ input {
   -webkit-user-select: auto;
   user-select: auto;
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #bulletin-to-print, #bulletin-to-print * {
+    visibility: visible;
+  }
+  #bulletin-to-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
