@@ -28,50 +28,63 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
     const element = printRef.current;
     if (!element) return null;
 
-    // Temporarily remove constraints to allow full capture
-    const parent = element.parentElement;
-    const originalOverflow = parent?.style.overflow;
-    if (parent) {
-      parent.style.overflow = 'visible';
+    try {
+      // Ensure the element is visible and has dimensions
+      const canvas = await html2canvas(element, { 
+        scale: 2, // Reduced from 3 to avoid memory issues on some devices
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        onclone: (clonedDoc) => {
+          // You can modify the cloned document here if needed
+          const clonedElement = clonedDoc.getElementById('bulletin-to-print');
+          if (clonedElement) {
+            clonedElement.style.display = 'block';
+          }
+        }
+      });
+      return canvas;
+    } catch (err) {
+      console.error('html2canvas error:', err);
+      return null;
     }
-
-    const canvas = await html2canvas(element, { 
-      scale: 3, // High quality
-      useCORS: true,
-      logging: false,
-      windowWidth: element.scrollWidth,
-      windowHeight: element.scrollHeight
-    });
-
-    if (parent && originalOverflow !== undefined) {
-      parent.style.overflow = originalOverflow;
-    }
-
-    return canvas;
   };
 
   const handleDownloadPdf = async () => {
     setIsGenerating(true);
     try {
       const canvas = await generateCanvas();
-      if (!canvas) return;
+      if (!canvas) {
+        throw new Error('Canvas generation failed');
+      }
 
-      const data = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
       const pdf = new jsPDF({
-        orientation: 'portrait',
+        orientation: 'p',
         unit: 'px',
         format: 'a4',
+        hotfixes: ['px_scaling']
       });
 
-      const imgProperties = pdf.getImageProperties(data);
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      
+      const imgProps = pdf.getImageProperties(imgData);
+      const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
+      
+      const width = imgProps.width * ratio;
+      const height = imgProps.height * ratio;
+      
+      // Center the image
+      const x = (pdfWidth - width) / 2;
+      const y = 0;
 
-      pdf.addImage(data, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`Bulletin_${studentInfo.firstName}_${studentInfo.lastName}_${semesterName}.pdf`);
+      pdf.addImage(imgData, 'JPEG', x, y, width, height);
+      pdf.save(`Bulletin_${studentInfo.firstName}_${studentInfo.lastName}.pdf`);
     } catch (error) {
       console.error('Failed to generate PDF', error);
-      alert("Erreur lors de la génération du PDF. Veuillez réessayer.");
+      alert("Désolé, une erreur est survenue lors de la création du PDF. Essayez de prendre une capture d'écran ou d'utiliser le bouton Image.");
     } finally {
       setIsGenerating(false);
     }
@@ -81,16 +94,18 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
     setIsGenerating(true);
     try {
       const canvas = await generateCanvas();
-      if (!canvas) return;
+      if (!canvas) {
+        throw new Error('Canvas generation failed');
+      }
 
       const data = canvas.toDataURL('image/png');
       const link = document.createElement('a');
-      link.download = `Bulletin_${studentInfo.firstName}_${studentInfo.lastName}_${semesterName}.png`;
+      link.download = `Bulletin_${studentInfo.firstName}_${studentInfo.lastName}.png`;
       link.href = data;
       link.click();
     } catch (error) {
       console.error('Failed to generate Image', error);
-      alert("Erreur lors de la génération de l'image. Veuillez réessayer.");
+      alert("Erreur lors de la génération de l'image.");
     } finally {
       setIsGenerating(false);
     }
@@ -110,7 +125,7 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
         </div>
         
         <div className="p-3 sm:p-4 overflow-y-auto grow bg-gray-50">
-          <div ref={printRef} className="bg-white p-6 sm:p-8 border border-gray-200 shadow-sm mx-auto" style={{ width: '100%', maxWidth: '750px' }}>
+          <div id="bulletin-to-print" ref={printRef} className="bg-white p-6 sm:p-8 border border-gray-200 shadow-sm mx-auto" style={{ width: '100%', maxWidth: '750px' }}>
             {/* Header */}
             <div className="flex justify-between items-start mb-5 border-b-2 border-indigo-800 pb-4">
               <div className="flex items-center gap-2">
