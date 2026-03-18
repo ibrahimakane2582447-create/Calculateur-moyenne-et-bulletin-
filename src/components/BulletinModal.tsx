@@ -198,9 +198,9 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
   let totalCoef = 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4 overflow-y-auto no-print">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl my-4 flex flex-col max-h-[95vh]">
-        <div className="flex justify-between items-center p-3 border-b shrink-0">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4 overflow-y-auto print:static print:bg-transparent print:p-0">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl my-4 flex flex-col max-h-[95vh] print:max-h-none print:m-0 print:shadow-none">
+        <div className="flex justify-between items-center p-3 border-b shrink-0 print:hidden">
           <h2 className="text-lg font-bold text-gray-800">Aperçu du Bulletin</h2>
           <div className="flex items-center gap-2">
             <span className="text-[10px] text-indigo-600 font-medium hidden sm:inline">Cliquez sur le bulletin pour le télécharger</span>
@@ -210,7 +210,7 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
           </div>
         </div>
         
-        <div className="p-3 sm:p-4 overflow-y-auto grow bg-gray-50">
+        <div className="p-3 sm:p-4 overflow-y-auto grow bg-gray-50 print:p-0 print:overflow-visible print:bg-transparent">
           <div 
             id="bulletin-to-print" 
             ref={printRef} 
@@ -335,7 +335,7 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
           </div>
         </div>
 
-        <div className="p-3 border-t shrink-0 flex flex-wrap justify-center gap-2 bg-gray-50 rounded-b-xl">
+        <div className="p-3 border-t shrink-0 flex flex-wrap justify-center gap-2 bg-gray-50 rounded-b-xl print:hidden">
           <button
             onClick={onClose}
             className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded-lg text-sm font-bold transition-colors"
