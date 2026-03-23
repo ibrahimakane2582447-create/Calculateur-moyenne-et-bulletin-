@@ -242,16 +242,24 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
                 </div>
               </div>
               <div className="text-right">
+                {studentInfo.schoolName && (
+                  <p className="text-xs sm:text-sm font-bold text-gray-800 mb-1 print:text-lg">{studentInfo.schoolName}</p>
+                )}
                 <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5 print:text-base">Année Scolaire : {studentInfo.schoolYear || '2025-2026'}</p>
               </div>
             </div>
 
             {/* Student Info */}
-            <div className="flex justify-between mb-5 text-gray-800 bg-gray-50 p-3 rounded-lg border border-gray-200 print:bg-transparent print:border-none print:p-0 print:mb-8">
-              <div>
-                <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-wider mb-0.5 print:text-sm">Élève</p>
-                <p className="text-xs sm:text-sm print:text-lg"><span className="font-bold">Nom :</span> {studentInfo.lastName.toUpperCase()}</p>
-                <p className="text-xs sm:text-sm print:text-lg"><span className="font-bold">Prénom :</span> {studentInfo.firstName}</p>
+            <div className="flex justify-between items-center mb-5 text-gray-800 bg-gray-50 p-3 rounded-lg border border-gray-200 print:bg-transparent print:border-none print:p-0 print:mb-8">
+              <div className="flex items-center gap-4">
+                {studentInfo.photoUrl && (
+                  <img src={studentInfo.photoUrl} alt="Élève" className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover border-2 border-indigo-100 print:border-indigo-800" />
+                )}
+                <div>
+                  <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-wider mb-0.5 print:text-sm">Élève</p>
+                  <p className="text-xs sm:text-sm print:text-lg"><span className="font-bold">Nom :</span> {studentInfo.lastName.toUpperCase()}</p>
+                  <p className="text-xs sm:text-sm print:text-lg"><span className="font-bold">Prénom :</span> {studentInfo.firstName}</p>
+                </div>
               </div>
               <div className="text-right">
                 <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase tracking-wider mb-0.5 print:text-sm">Classe</p>

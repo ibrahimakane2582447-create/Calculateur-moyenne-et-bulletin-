@@ -12,6 +12,8 @@ export interface StudentInfo {
   lastName: string;
   className: string;
   schoolYear: string;
+  schoolName?: string;
+  photoUrl?: string;
 }
 
 export interface HistoryRecord {

@@ -3,7 +3,7 @@ import { StudentInfo, Subject, HistoryRecord } from './types';
 import { calculateSemesterAverage, formatNumber } from './utils';
 import BulletinModal from './components/BulletinModal';
 import AdBanner from './components/AdBanner';
-import { BookOpen, User, Calculator, FileText, GraduationCap, Plus, Trash2, Clock, Save } from 'lucide-react';
+import { BookOpen, User, Calculator, FileText, GraduationCap, Plus, Trash2, Clock, Save, Camera } from 'lucide-react';
 
 const DEFAULT_SUBJECTS: Subject[] = [
   { id: '1', name: 'Mathématiques', devoir1: '', devoir2: '', composition: '', coef: 4 },
@@ -21,7 +21,9 @@ export default function App() {
     firstName: '',
     lastName: '',
     className: '',
-    schoolYear: '2025-2026'
+    schoolYear: '2025-2026',
+    schoolName: '',
+    photoUrl: ''
   });
   
   const [semester1, setSemester1] = useState<Subject[]>(JSON.parse(JSON.stringify(DEFAULT_SUBJECTS)));
@@ -218,6 +220,17 @@ export default function App() {
     );
   };
 
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setStudentInfo({ ...studentInfo, photoUrl: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const avgS1 = calculateSemesterAverage(semester1);
   const avgS2 = calculateSemesterAverage(semester2);
   const annualAvg = (avgS1 + avgS2) / 2;
@@ -256,6 +269,13 @@ export default function App() {
             <div className="grid grid-cols-2 gap-3">
               <input
                 type="text"
+                placeholder="Nom de l'école"
+                value={studentInfo.schoolName || ''}
+                onChange={e => setStudentInfo({...studentInfo, schoolName: e.target.value})}
+                className="col-span-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+              />
+              <input
+                type="text"
                 placeholder="Prénom"
                 value={studentInfo.firstName}
                 onChange={e => setStudentInfo({...studentInfo, firstName: e.target.value})}
@@ -282,6 +302,24 @@ export default function App() {
                 onChange={e => setStudentInfo({...studentInfo, schoolYear: e.target.value})}
                 className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
               />
+              <div className="col-span-2 flex items-center gap-3 mt-1">
+                <label className="flex items-center justify-center gap-2 bg-indigo-50 text-indigo-600 px-4 py-2 rounded-lg text-sm font-medium cursor-pointer hover:bg-indigo-100 transition-colors w-full border border-indigo-100 border-dashed">
+                  <Camera className="w-4 h-4" />
+                  {studentInfo.photoUrl ? 'Changer la photo' : 'Ajouter une photo (optionnel)'}
+                  <input type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+                </label>
+                {studentInfo.photoUrl && (
+                  <div className="relative shrink-0">
+                    <img src={studentInfo.photoUrl} alt="Élève" className="w-10 h-10 rounded-full object-cover border-2 border-indigo-100" />
+                    <button 
+                      onClick={() => setStudentInfo({...studentInfo, photoUrl: ''})}
+                      className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
