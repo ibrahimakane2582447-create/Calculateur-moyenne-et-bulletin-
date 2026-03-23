@@ -22,7 +22,9 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
 
   const semesterAverage = calculateSemesterAverage(subjects);
   const semesterMention = getMention(semesterAverage);
+  const semesterAppreciation = getAppreciation(semesterAverage);
   const annualMention = annualAverage !== undefined ? getMention(annualAverage) : undefined;
+  const annualAppreciation = annualAverage !== undefined ? getAppreciation(annualAverage) : undefined;
 
   const generateCanvas = async (scale = 2) => {
     const element = printRef.current;
@@ -325,6 +327,7 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
                   <div className="text-right">
                     <span className="text-base sm:text-lg font-black text-indigo-700 print:text-2xl">{formatNumber(semesterAverage)} / 20</span>
                     <p className="text-[10px] sm:text-xs font-bold text-indigo-600 mt-0.5 print:text-sm">Mention : {semesterMention}</p>
+                    <p className="text-[10px] sm:text-xs italic text-indigo-500 mt-0.5 print:text-sm">{semesterAppreciation}</p>
                   </div>
                 </div>
                 {annualAverage !== undefined && (
@@ -333,6 +336,7 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
                     <div className="text-right">
                       <span className="text-base sm:text-lg font-black text-emerald-600 print:text-2xl">{formatNumber(annualAverage)} / 20</span>
                       <p className="text-[10px] sm:text-xs font-bold text-emerald-600 mt-0.5 print:text-sm">Mention : {annualMention}</p>
+                      <p className="text-[10px] sm:text-xs italic text-emerald-500 mt-0.5 print:text-sm">{annualAppreciation}</p>
                     </div>
                   </div>
                 )}

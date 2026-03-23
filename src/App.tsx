@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StudentInfo, Subject, HistoryRecord } from './types';
-import { calculateSemesterAverage, formatNumber } from './utils';
+import { calculateSemesterAverage, formatNumber, getAppreciation, getMention } from './utils';
 import BulletinModal from './components/BulletinModal';
 import AdBanner from './components/AdBanner';
 import { BookOpen, User, Calculator, FileText, GraduationCap, Plus, Trash2, Clock, Save, Camera } from 'lucide-react';
@@ -360,13 +360,25 @@ export default function App() {
             
             <div className="space-y-4">
               <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
-                <span className="text-gray-600 font-medium">Moyenne Semestre 1</span>
-                <span className="text-2xl font-bold text-gray-900">{formatNumber(avgS1)}</span>
+                <div>
+                  <span className="text-gray-600 font-medium block">Moyenne Semestre 1</span>
+                  <span className="text-xs text-indigo-500 italic">{getAppreciation(avgS1)}</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-2xl font-bold text-gray-900 block">{formatNumber(avgS1)}</span>
+                  <span className="text-xs font-bold text-indigo-600">{getMention(avgS1)}</span>
+                </div>
               </div>
               
               <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex justify-between items-center">
-                <span className="text-gray-600 font-medium">Moyenne Semestre 2</span>
-                <span className="text-2xl font-bold text-gray-900">{formatNumber(avgS2)}</span>
+                <div>
+                  <span className="text-gray-600 font-medium block">Moyenne Semestre 2</span>
+                  <span className="text-xs text-indigo-500 italic">{getAppreciation(avgS2)}</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-2xl font-bold text-gray-900 block">{formatNumber(avgS2)}</span>
+                  <span className="text-xs font-bold text-indigo-600">{getMention(avgS2)}</span>
+                </div>
               </div>
 
               <div className="bg-indigo-600 p-6 rounded-2xl shadow-lg text-white mt-8 relative overflow-hidden">
@@ -378,10 +390,14 @@ export default function App() {
                     <span className="text-5xl font-black">{formatNumber(annualAvg)}</span>
                     <span className="text-xl text-indigo-200 mb-1">/ 20</span>
                   </div>
+                  <p className="text-sm text-indigo-200 mt-2 italic">{getAppreciation(annualAvg)}</p>
                   
-                  <div className="mt-4 pt-4 border-t border-indigo-500/50">
+                  <div className="mt-4 pt-4 border-t border-indigo-500/50 flex justify-between items-center">
                     <p className="text-sm font-medium">
                       {annualAvg >= 10 ? 'Statut : Admis en classe supérieure' : 'Statut : Non admis'}
+                    </p>
+                    <p className="text-sm font-bold bg-white/20 px-2 py-1 rounded">
+                      {getMention(annualAvg)}
                     </p>
                   </div>
                 </div>
