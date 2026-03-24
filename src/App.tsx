@@ -231,6 +231,17 @@ export default function App() {
     }
   };
 
+  const handleSchoolLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setStudentInfo({ ...studentInfo, schoolLogoUrl: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const avgS1 = calculateSemesterAverage(semester1);
   const avgS2 = calculateSemesterAverage(semester2);
   const annualAvg = (avgS1 + avgS2) / 2;
@@ -267,13 +278,30 @@ export default function App() {
               <h2 className="font-semibold">Informations Élève</h2>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <input
-                type="text"
-                placeholder="Nom de l'école"
-                value={studentInfo.schoolName || ''}
-                onChange={e => setStudentInfo({...studentInfo, schoolName: e.target.value})}
-                className="col-span-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
-              />
+              <div className="col-span-2 flex items-center gap-3">
+                <input
+                  type="text"
+                  placeholder="Nom de l'école"
+                  value={studentInfo.schoolName || ''}
+                  onChange={e => setStudentInfo({...studentInfo, schoolName: e.target.value})}
+                  className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                />
+                <label className="shrink-0 flex items-center justify-center bg-indigo-50 text-indigo-600 px-3 py-2 rounded-lg text-sm font-medium cursor-pointer hover:bg-indigo-100 transition-colors border border-indigo-100 border-dashed" title="Ajouter le logo de l'école">
+                  <Camera className="w-4 h-4" />
+                  <input type="file" accept="image/*" className="hidden" onChange={handleSchoolLogoUpload} />
+                </label>
+                {studentInfo.schoolLogoUrl && (
+                  <div className="relative shrink-0">
+                    <img src={studentInfo.schoolLogoUrl} alt="Logo" className="w-10 h-10 rounded-lg object-contain border-2 border-indigo-100 bg-white" />
+                    <button 
+                      onClick={() => setStudentInfo({...studentInfo, schoolLogoUrl: ''})}
+                      className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+              </div>
               <input
                 type="text"
                 placeholder="Prénom"

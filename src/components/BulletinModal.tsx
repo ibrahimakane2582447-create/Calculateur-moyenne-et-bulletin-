@@ -235,9 +235,13 @@ export default function BulletinModal({ isOpen, onClose, studentInfo, semesterNa
             {/* Header */}
             <div className="flex justify-between items-start mb-5 border-b-2 border-indigo-800 pb-4 print:mb-8 print:pb-6">
               <div className="flex items-center gap-2 print:gap-4">
-                <div className="bg-indigo-600 p-2 rounded-lg print:bg-transparent print:p-0">
-                  <GraduationCap className="w-6 h-6 text-white print:text-indigo-800 print:w-10 print:h-10" />
-                </div>
+                {studentInfo.schoolLogoUrl ? (
+                  <img src={studentInfo.schoolLogoUrl} alt="Logo École" className="w-10 h-10 sm:w-12 sm:h-12 object-contain print:w-16 print:h-16" />
+                ) : (
+                  <div className="bg-indigo-600 p-2 rounded-lg print:bg-transparent print:p-0">
+                    <GraduationCap className="w-6 h-6 text-white print:text-indigo-800 print:w-10 print:h-10" />
+                  </div>
+                )}
                 <div>
                   <h1 className="text-base sm:text-lg font-black uppercase tracking-wider text-gray-900 print:text-2xl">Bulletin de Notes</h1>
                   <p className="text-[10px] sm:text-xs text-gray-600 font-medium print:text-base">{semesterName}</p>
